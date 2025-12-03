@@ -38,7 +38,7 @@ export function TerminalHeader({ showPanel, onTogglePanel, isProcessing, remaini
               : 'bg-[#f472b6]/10 border-[#f472b6]/30'
           }`}>
             <span className={`text-xs ${remaining > 0 ? 'text-[#a0a0b0]' : 'text-[#f472b6]'}`}>
-              {remaining > 0 ? `${remaining}/2 consultas` : 'Sin consultas'}
+              {remaining > 0 ? `${remaining}/2 queries` : 'No queries left'}
             </span>
           </div>
         )}

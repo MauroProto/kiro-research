@@ -30,7 +30,7 @@ export function TerminalInput({ value, onChange, onSubmit, isLoading, disabled }
         value={value}
         onChange={onChange}
         disabled={isLoading || disabled}
-        placeholder={disabled ? "Límite alcanzado" : ""}
+        placeholder={disabled ? "Limit reached" : ""}
         className={`flex-1 bg-transparent border-none outline-none caret-[#c6a0ff] ${
           disabled ? "text-[#5a5a6e] cursor-not-allowed" : "text-white"
         }`}

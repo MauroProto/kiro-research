@@ -114,7 +114,7 @@ export async function POST(req: Request) {
       return new Response(
         JSON.stringify({ 
           error: 'Rate limit exceeded',
-          message: `Has alcanzado el límite de ${rateLimit.total} consultas diarias. Vuelve mañana.`,
+          message: `You have reached the limit of ${rateLimit.total} daily queries. Come back tomorrow.`,
           remaining: 0,
           resetAt: rateLimit.resetAt,
           ip: rateLimit.ip

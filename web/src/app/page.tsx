@@ -32,7 +32,7 @@ export default function Home() {
     onError: (error) => {
       // Check if it's a rate limit error
       if (error.message.includes('Rate limit') || error.message.includes('429')) {
-        setRateLimitError('Has alcanzado el límite de 2 consultas diarias. Vuelve mañana.');
+        setRateLimitError('You have reached the limit of 2 daily queries. Come back tomorrow.');
         setRemaining(0);
       }
     },
@@ -65,7 +65,7 @@ export default function Home() {
             <MessageList messages={messages} isLoading={isLoading} />
             {rateLimitError && (
               <div className="text-[#f472b6] text-sm mt-4 p-4 bg-[#f472b6]/10 rounded-lg border border-[#f472b6]/30">
-                <div className="font-medium mb-1">Límite alcanzado</div>
+                <div className="font-medium mb-1">Limit reached</div>
                 <div className="text-[#a0a0b0]">{rateLimitError}</div>
               </div>
             )}
