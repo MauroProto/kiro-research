@@ -206,8 +206,6 @@ IMPORTANT: Always cite actual URLs from search results.`,
             hypothesis: z.string().describe("The hypothesis to analyze"),
           }),
           execute: async ({ hypothesis }) => {
-            console.log(`\n[DIRECTOR] Analyzing: "${hypothesis}"`);
-            
             // Check for similar past hypotheses
             const similarHypotheses = getSimilarHypotheses(hypothesis);
             
@@ -274,12 +272,9 @@ ${relatedTopics.map(r => `- ${r.entity} (${r.relation})`).join('\n')}
             const p = PERSPECTIVES[perspective];
             const fullQuery = `${query} ${p.prefix}`;
             
-            console.log(`[${p.name}] Searching: ${fullQuery.slice(0, 50)}...`);
-            
             // Check cache first
             const cached = getCachedSearch(query, perspective);
             if (cached) {
-              console.log(`[${p.name}] Cache hit! (${cached.hits} previous hits)`);
               currentResearchResults[perspective] = cached.results.map(r => ({
                 ...r,
                 domain: extractDomain(r.url)
@@ -352,8 +347,6 @@ ${relatedTopics.map(r => `- ${r.entity} (${r.relation})`).join('\n')}
             againstCount: z.number().describe("Number of contradicting sources")
           }),
           execute: async ({ hypothesis, forCount, againstCount }) => {
-            console.log(`\n[VALIDATOR] Cross-validating evidence...`);
-            
             // Perform cross-validation
             const validation = validateEvidence(currentResearchResults);
             const verdict = determineVerdict(validation, forCount, againstCount);
@@ -372,8 +365,6 @@ ${relatedTopics.map(r => `- ${r.entity} (${r.relation})`).join('\n')}
             // Update knowledge graph with verdict
             addEntity(verdict.verdict, 'evidence', { confidence: validation.finalConfidence });
             addRelation(hypothesis, verdict.verdict, 'supports', validation.finalConfidence / 100);
-            
-            console.log(`[VALIDATOR] Confidence: ${validation.finalConfidence}% | Verdict: ${verdict.verdict}`);
             
             return {
               validation: {

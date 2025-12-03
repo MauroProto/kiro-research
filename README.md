@@ -6,6 +6,7 @@
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/research-agent&root=web&env=DEEPSEEK_API_KEY,EXA_API_KEY)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Built with Kiro](https://img.shields.io/badge/Built%20with-Kiro-9046ff)](https://kiro.dev)
 
 </div>
 
@@ -63,6 +64,44 @@ Open [http://localhost:3000](http://localhost:3000)
 - Next.js 15, React 19, Tailwind CSS
 - DeepSeek Chat + Vercel AI SDK
 - Exa API for web search
+
+---
+
+## 🛠️ Built with Kiro IDE
+
+Este proyecto fue desarrollado utilizando **Kiro IDE** para el Kiro Code Hackathon.
+
+### Kiro Features Utilizadas
+
+| Feature | Descripción | Ubicación |
+|---------|-------------|-----------|
+| **Specs** | Requisitos, diseño y tareas estructuradas | `.kiro/specs/research-agent/` |
+| **Hooks** | Automatización de linting, tests y validación | `.kiro/hooks/` |
+| **Steering** | Guías de proyecto y estándares de código | `.kiro/steering/` |
+| **Vibe Coding** | Desarrollo conversacional con el agente | Documentado en `KIRO_USAGE.md` |
+
+### Estructura Kiro
+
+```
+.kiro/
+├── KIRO_USAGE.md              # Documentación completa del uso de Kiro
+├── specs/
+│   └── research-agent/
+│       ├── requirements.md    # Requisitos funcionales y no funcionales
+│       ├── design.md          # Arquitectura y diseño técnico
+│       └── tasks.md           # Tareas de implementación
+├── hooks/
+│   ├── on-save-lint.md        # Auto-lint al guardar
+│   ├── on-test-run.md         # Tests automáticos
+│   └── on-api-change.md       # Validación de APIs
+└── steering/
+    ├── project-guidelines.md  # Guías del proyecto
+    └── coding-standards.md    # Estándares de código
+```
+
+Para más detalles sobre cómo se utilizó Kiro, ver [.kiro/KIRO_USAGE.md](.kiro/KIRO_USAGE.md).
+
+---
 
 ## License
 
