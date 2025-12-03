@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* AWS Diatype Font */
+@font-face {
+  font-family: 'AWSDiatype';
+  src: url('/AWSDiatype.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #19161d;
+  color: #e0e0e0;
+  font-family: 'AWSDiatype', "SF Mono", "Fira Code", "Monaco", monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Simple terminal styling */
+.terminal-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: inherit;
+  caret-color: #9046ff;
+  width: 100%;
+}
+
+.terminal-input::placeholder {
+  color: #5a5a6e;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f1c26;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3d3850;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9046ff;
+}
+
+/* Selection */
+::selection {
+  background: #9046ff;
+  color: #fff;
+}
+
+/* Links */
+a {
+  color: #9046ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #a668ff;
+}
+
+/* Code */
+code {
+  background: #1f1c26;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+/* Status dot */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.online {
+  background: #9046ff;
+}
+
+.status-dot.offline {
+  background: #ff4d6a;
+}
+
+.status-dot.processing {
+  background: #9046ff;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Cursor blink */
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Glow effect */
+.glow-purple {
+  text-shadow: 0 0 10px #9046ff;
+}
