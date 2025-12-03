@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useUserId, shortenUserId } from '@/hooks/useUserId';
 
 interface TerminalHeaderProps {
   showPanel: boolean;
@@ -11,7 +10,6 @@ interface TerminalHeaderProps {
 }
 
 export function TerminalHeader({ showPanel, onTogglePanel, isProcessing, remaining = 2 }: TerminalHeaderProps) {
-  const { userId, isLoading } = useUserId();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -45,13 +43,6 @@ export function TerminalHeader({ showPanel, onTogglePanel, isProcessing, remaini
           </div>
         )}
         
-        {/* User ID badge - only render after mount */}
-        {mounted && userId && !isLoading && (
-          <div className="flex items-center gap-2 px-2 py-1 bg-[#2a2635] rounded border border-[#3d3850]">
-            <span className="w-2 h-2 rounded-full bg-[#4ade80]" />
-            <span className="text-[#a0a0b0] text-xs font-mono">{shortenUserId(userId)}</span>
-          </div>
-        )}
         {isProcessing && (
           <span className="text-[#9046ff]">● processing</span>
         )}

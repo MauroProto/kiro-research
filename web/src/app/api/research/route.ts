@@ -17,7 +17,7 @@ import {
   determineVerdict,
   type SourceData 
 } from "@/lib/validation";
-import { checkRateLimit, incrementUsage } from "@/lib/rateLimit";
+import { checkRateLimitByIP, incrementUsageByIP } from "@/lib/rateLimit";
 
 // DeepSeek Configuration
 const deepseek = createOpenAI({
@@ -106,33 +106,32 @@ function extractDomain(url: string): string {
 
 export async function POST(req: Request) {
   try {
-    const { messages, userId } = await req.json();
+    const { messages } = await req.json();
     
-    // Check rate limit
-    if (userId) {
-      const rateLimit = checkRateLimit(userId);
-      if (!rateLimit.allowed) {
-        return new Response(
-          JSON.stringify({ 
-            error: 'Rate limit exceeded',
-            message: `Has alcanzado el límite de ${rateLimit.total} consultas. Vuelve mañana.`,
-            remaining: 0,
-            resetAt: rateLimit.resetAt
-          }), 
-          { 
-            status: 429,
-            headers: {
-              'Content-Type': 'application/json',
-              'X-RateLimit-Remaining': '0',
-              'X-RateLimit-Reset': rateLimit.resetAt.toString()
-            }
+    // Check rate limit by IP (server-side, harder to bypass)
+    const rateLimit = checkRateLimitByIP(req);
+    if (!rateLimit.allowed) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Rate limit exceeded',
+          message: `Has alcanzado el límite de ${rateLimit.total} consultas diarias. Vuelve mañana.`,
+          remaining: 0,
+          resetAt: rateLimit.resetAt,
+          ip: rateLimit.ip
+        }), 
+        { 
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': rateLimit.resetAt.toString()
           }
-        );
-      }
-      
-      // Increment usage
-      incrementUsage(userId);
+        }
+      );
     }
+    
+    // Increment usage by IP
+    incrementUsageByIP(req);
     
     // Reset results for new research
     currentResearchResults = {};

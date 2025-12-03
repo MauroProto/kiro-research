@@ -6,21 +6,29 @@ import { TerminalHeader } from "@/components/TerminalHeader";
 import { TerminalInput } from "@/components/TerminalInput";
 import { MessageList } from "@/components/MessageList";
 import { AgentPanel } from "@/components/AgentPanel";
-import { useUserId } from "@/hooks/useUserId";
 
 export default function Home() {
   const [showPanel, setShowPanel] = useState(true);
   const [rateLimitError, setRateLimitError] = useState<string | null>(null);
   const [remaining, setRemaining] = useState<number>(2);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { userId } = useUserId();
+  
+  // Fetch remaining prompts on mount
+  useEffect(() => {
+    fetch('/api/rate-limit')
+      .then(res => res.json())
+      .then(data => {
+        setRemaining(data.remaining ?? 2);
+      })
+      .catch(() => {
+        // Default to 2 if error
+        setRemaining(2);
+      });
+  }, []);
   
   const { messages, input, handleInputChange, handleSubmit, isLoading, error, setInput } = useChat({
     api: "/api/research",
     maxSteps: 25,
-    body: {
-      userId,
-    },
     onError: (error) => {
       // Check if it's a rate limit error
       if (error.message.includes('Rate limit') || error.message.includes('429')) {

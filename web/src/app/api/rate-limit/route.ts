@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { checkRateLimit } from '@/lib/rateLimit';
+import { checkRateLimitByIP } from '@/lib/rateLimit';
 
 export async function GET(request: NextRequest) {
-  const userId = request.headers.get('x-user-id');
+  // Check rate limit by IP address (server-side)
+  const result = checkRateLimitByIP(request);
   
-  if (!userId) {
-    return NextResponse.json({ error: 'User ID required' }, { status: 400 });
-  }
-  
-  const result = checkRateLimit(userId);
-  
-  return NextResponse.json(result);
+  return NextResponse.json({
+    allowed: result.allowed,
+    remaining: result.remaining,
+    total: result.total,
+    resetAt: result.resetAt,
+  });
 }
-
