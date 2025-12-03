@@ -6,6 +6,7 @@ import { TerminalHeader } from "@/components/TerminalHeader";
 import { TerminalInput } from "@/components/TerminalInput";
 import { MessageList } from "@/components/MessageList";
 import { AgentPanel } from "@/components/AgentPanel";
+import { GhostScreensaver } from "@/components/GhostScreensaver";
 
 export default function Home() {
   const [showPanel, setShowPanel] = useState(true);
@@ -48,6 +49,9 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col bg-[#19161d]">
+      {/* Ghost Screensaver - appears after 30 seconds of inactivity */}
+      <GhostScreensaver idleTimeout={30000} duration={12000} />
+      
       {/* Header */}
       <TerminalHeader 
         showPanel={showPanel}
