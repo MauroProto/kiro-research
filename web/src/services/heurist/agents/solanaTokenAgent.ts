@@ -89,20 +89,18 @@ export interface TrendingSolanaToken {
 
 /**
  * Get detailed token trading metrics
- * Tool: query_token_metrics
- *
- * Fetches trading data including volume, price movements, and liquidity
+ * Uses query mode for better reliability
  */
 export async function getTokenMetrics(
   mintAddress: string
-): Promise<TokenMetrics | null> {
+): Promise<{ response: string; data?: TokenMetrics }> {
   const response = await callHeuristAgent(
     HEURIST_CONFIG.agents.solanaToken,
     {
-      tool: 'query_token_metrics',
-      tool_arguments: { mint_address: mintAddress },
+      query: `Get detailed trading metrics for the Solana token with address "${mintAddress}". Include current price, 24h price change, trading volume, liquidity, number of trades, and buy/sell ratio. Analyze its recent trading activity.`,
+      raw_data_only: false,
     },
-    { useCache: true, cacheTTL: 30 * 1000 }
+    { useCache: true, cacheTTL: 30 * 1000, timeout: 60000 }
   );
 
   const result = response.result as {
@@ -110,12 +108,15 @@ export async function getTokenMetrics(
     data?: TokenMetrics;
   };
 
-  return result?.data || null;
+  return {
+    response: result?.response || "No metrics available",
+    data: result?.data,
+  };
 }
 
 /**
  * Fetch top token holders and distribution
- * Tool: query_token_holders
+ * Uses query mode for better reliability
  */
 export async function getTokenHolders(
   mintAddress: string
@@ -123,14 +124,15 @@ export async function getTokenHolders(
   holders: TokenHolder[];
   total_holders?: number;
   concentration_top10?: number;
+  response?: string;
 }> {
   const response = await callHeuristAgent(
     HEURIST_CONFIG.agents.solanaToken,
     {
-      tool: 'query_token_holders',
-      tool_arguments: { mint_address: mintAddress },
+      query: `Get the top holders for the Solana token "${mintAddress}". Show the largest wallet addresses, their balances, and percentage of total supply. Analyze the holder concentration and distribution.`,
+      raw_data_only: false,
     },
-    { useCache: true, cacheTTL: 60 * 1000 }
+    { useCache: true, cacheTTL: 60 * 1000, timeout: 60000 }
   );
 
   const result = response.result as {
@@ -146,6 +148,7 @@ export async function getTokenHolders(
     holders: result?.data?.holders || [],
     total_holders: result?.data?.total_holders,
     concentration_top10: result?.data?.concentration_top10,
+    response: result?.response,
   };
 }
 
@@ -185,9 +188,7 @@ export async function getTokenBuyers(
 
 /**
  * Fetch top traders by volume
- * Tool: query_top_traders
- *
- * Returns whales actively trading the token and arbitrage bots
+ * Uses query mode for better reliability
  */
 export async function getTopTraders(
   mintAddress: string
@@ -198,10 +199,10 @@ export async function getTopTraders(
   const response = await callHeuristAgent(
     HEURIST_CONFIG.agents.solanaToken,
     {
-      tool: 'query_top_traders',
-      tool_arguments: { mint_address: mintAddress },
+      query: `Get the top traders for the Solana token "${mintAddress}". Show whales and high-volume traders with their trading volume, buy/sell activity, and profit/loss. Identify any potential arbitrage bots.`,
+      raw_data_only: false,
     },
-    { useCache: true, cacheTTL: 60 * 1000 }
+    { useCache: true, cacheTTL: 60 * 1000, timeout: 60000 }
   );
 
   const result = response.result as {
@@ -293,6 +294,7 @@ export async function analyzeToken(
   holders: TokenHolder[];
   top_traders: TopTrader[];
   early_buyers: TokenBuyer[];
+  summary?: string;
 }> {
   const [metricsResult, holdersResult, tradersResult, buyersResult] = await Promise.all([
     getTokenMetrics(mintAddress),
@@ -302,9 +304,10 @@ export async function analyzeToken(
   ]);
 
   return {
-    metrics: metricsResult,
+    metrics: metricsResult.data || null,
     holders: holdersResult.holders,
     top_traders: tradersResult.traders,
     early_buyers: buyersResult.buyers,
+    summary: metricsResult.response,
   };
 }

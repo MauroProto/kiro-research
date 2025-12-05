@@ -90,18 +90,18 @@ export interface TrendingPool {
 
 /**
  * Get detailed token information by CoinGecko ID
- * Tool: get_token_info
+ * Uses query mode for better reliability
  */
 export async function getTokenInfo(
   coingeckoId: string
-): Promise<TokenInfo | null> {
+): Promise<{ response: string; data?: TokenInfo }> {
   const response = await callHeuristAgent(
     HEURIST_CONFIG.agents.coingecko,
     {
-      tool: 'get_token_info',
-      tool_arguments: { id: coingeckoId },
+      query: `Get detailed information about the cryptocurrency "${coingeckoId}". Include current price, 24h price change, market cap, trading volume, all-time high, all-time low, and circulating supply. Provide a brief analysis of its recent performance.`,
+      raw_data_only: false,
     },
-    { useCache: true, cacheTTL: 60 * 1000 }
+    { useCache: true, cacheTTL: 60 * 1000, timeout: 60000 }
   );
 
   const result = response.result as {
@@ -109,7 +109,10 @@ export async function getTokenInfo(
     data?: TokenInfo;
   };
 
-  return result?.data || null;
+  return {
+    response: result?.response || "No token data available",
+    data: result?.data,
+  };
 }
 
 /**

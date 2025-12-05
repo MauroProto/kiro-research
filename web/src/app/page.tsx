@@ -7,6 +7,7 @@ import { MessageList } from "@/components/MessageList";
 import { DegenAgentPanelControlled, DegenProgress, AgentId } from "@/components/DegenAgentPanel";
 import { GhostScreensaver } from "@/components/GhostScreensaver";
 import { CryptoTicker } from "@/components/CryptoTicker";
+import { ErrorSuppressor } from "@/components/ErrorSuppressor";
 
 const initialProgress: DegenProgress = {
   phase: "idle",
@@ -236,6 +237,8 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col bg-[#19161d]">
+      {/* Suppress wallet extension errors */}
+      <ErrorSuppressor />
       {/* Ghost Screensaver - appears after 30 seconds of inactivity */}
       <GhostScreensaver idleTimeout={30000} duration={12000} />
 

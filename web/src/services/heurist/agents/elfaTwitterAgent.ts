@@ -74,19 +74,16 @@ export async function searchMentions(
     negative: number;
     neutral: number;
   };
+  response?: string;
 }> {
+  // Use query mode instead of tool mode - more reliable
   const response = await callHeuristAgent(
     HEURIST_CONFIG.agents.elfaTwitter,
     {
-      tool: 'search_mentions',
-      tool_arguments: {
-        query,
-        limit: options.limit,
-        min_followers: options.minFollowers,
-        only_smart_money: options.onlySmartMoney,
-      },
+      query: `Search Twitter for mentions and discussions about "${query}". Find recent tweets from influential crypto accounts discussing this topic. Include sentiment analysis.`,
+      raw_data_only: false,
     },
-    { useCache: true, cacheTTL: 2 * 60 * 1000 }
+    { useCache: true, cacheTTL: 2 * 60 * 1000, timeout: 60000 }
   );
 
   const result = response.result as {
@@ -106,6 +103,7 @@ export async function searchMentions(
     mentions: result?.data?.mentions || [],
     total_count: result?.data?.total_count,
     sentiment_summary: result?.data?.sentiment_summary,
+    response: result?.response,
   };
 }
 
