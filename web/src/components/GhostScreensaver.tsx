@@ -1,71 +1,68 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 interface GhostScreensaverProps {
   idleTimeout?: number;
   duration?: number;
 }
 
-export function GhostScreensaver({ 
-  idleTimeout = 10000, // 10 seconds for testing
+export function GhostScreensaver({
+  idleTimeout = 30000, // 30 seconds
   duration = 12000
 }: GhostScreensaverProps) {
   const [isActive, setIsActive] = useState(false);
-  const [isLeaving, setIsLeaving] = useState(false);
   const [position, setPosition] = useState({ x: -100, y: 50 });
   const directionRef = useRef({ x: 1, y: 1 });
   const lastActivityRef = useRef(Date.now());
   const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const autoHideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Track last activity time
-  useEffect(() => {
-    const updateActivity = () => {
-      lastActivityRef.current = Date.now();
-      
-      // If screensaver is active, dismiss it
-      if (isActive && !isLeaving) {
-        setIsLeaving(true);
-        setTimeout(() => {
-          setIsActive(false);
-          setIsLeaving(false);
-        }, 400);
+  // Immediately dismiss ghost on any activity
+  const dismissGhost = useCallback(() => {
+    lastActivityRef.current = Date.now();
+    if (isActive) {
+      setIsActive(false);
+      // Clear auto-hide timeout if user dismissed early
+      if (autoHideTimeoutRef.current) {
+        clearTimeout(autoHideTimeoutRef.current);
+        autoHideTimeoutRef.current = null;
       }
-    };
+    }
+  }, [isActive]);
 
-    const events = ["mousedown", "keydown", "scroll", "touchstart", "click"];
-    events.forEach(event => window.addEventListener(event, updateActivity));
+  // Track activity
+  useEffect(() => {
+    // Include mousemove for instant detection
+    const events = ["mousemove", "mousedown", "keydown", "scroll", "touchstart", "touchmove", "click"];
+    events.forEach(event => window.addEventListener(event, dismissGhost, { passive: true }));
 
     // Check for idle every second
     checkIntervalRef.current = setInterval(() => {
       const idleTime = Date.now() - lastActivityRef.current;
-      
+
       if (idleTime >= idleTimeout && !isActive) {
         setIsActive(true);
-        setIsLeaving(false);
         setPosition({ x: -80, y: 30 + Math.random() * 40 });
         directionRef.current = { x: 1, y: Math.random() > 0.5 ? 1 : -1 };
-        
+
         // Auto-dismiss after duration
-        setTimeout(() => {
-          setIsLeaving(true);
-          setTimeout(() => {
-            setIsActive(false);
-            setIsLeaving(false);
-          }, 400);
+        autoHideTimeoutRef.current = setTimeout(() => {
+          setIsActive(false);
         }, duration);
       }
     }, 1000);
 
     return () => {
-      events.forEach(event => window.removeEventListener(event, updateActivity));
+      events.forEach(event => window.removeEventListener(event, dismissGhost));
       if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
+      if (autoHideTimeoutRef.current) clearTimeout(autoHideTimeoutRef.current);
     };
-  }, [idleTimeout, duration, isActive, isLeaving]);
+  }, [idleTimeout, duration, isActive, dismissGhost]);
 
   // Animate ghost
   useEffect(() => {
-    if (!isActive || isLeaving) return;
+    if (!isActive) return;
 
     const interval = setInterval(() => {
       setPosition(prev => {
@@ -89,7 +86,7 @@ export function GhostScreensaver({
     }, 25);
 
     return () => clearInterval(interval);
-  }, [isActive, isLeaving]);
+  }, [isActive]);
 
   if (!isActive) return null;
 
@@ -98,7 +95,7 @@ export function GhostScreensaver({
       <img
         src="/ghost.png"
         alt="ghost screensaver"
-        className={`absolute transition-opacity duration-300 ${isLeaving ? "opacity-0" : "opacity-40"}`}
+        className="absolute opacity-40"
         style={{
           width: "100px",
           height: "100px",

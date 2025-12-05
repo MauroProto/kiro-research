@@ -73,3 +73,13 @@ htmlcov/
 
 # mypy
 .mypy_cache/
+
+# Internal documentation (contains API keys references, internal notes)
+Documentacion-Heurist.md
+HEURIST-AGENTS-TOOLS.md
+PLAN-CRYPTO-RESEARCH.md
+backup-research-v1/
+
+# Hackathon submission files (private)
+HACKATHON_SUBMISSION.md
+VIDEO_SCRIPT.md
