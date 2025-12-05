@@ -7,7 +7,7 @@
 *Real-time market intelligence using 12 specialized AI agents*
 
 [![Built with Kiro](https://img.shields.io/badge/Built%20with-Kiro%20Code-9046ff?style=for-the-badge)](https://kiro.dev)
-[![Kiroween Hackathon](https://img.shields.io/badge/Kiroween-Hackathon%202025-orange?style=for-the-badge)](https://kiro.dev)
+[![Kiroween Hackathon](https://img.shields.io/badge/Kiroween-Hackathon%202025-orange?style=for-the-badge)](https://kiroween.devpost.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 <img src="web/public/web-app-manifest-512x512.png" alt="Research Agent Logo" width="200"/>
